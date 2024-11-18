@@ -1,5 +1,5 @@
 #### DevOpsDream-Day1
-###Day 1 Project to land your dream DevOps job
+### Day 1 Project to land your dream DevOps job
 
 ## Project Overview  
 This project focuses on setting up a simple web server, such as Nginx or Apache, on a Virtual Machine (VM). Next, you'll create a Managed Instance Group (MIG) to simplify VM management and enable automatic scaling. To handle traffic and maintain high availability, you'll implement a Layer 7 Load Balancer in front of the MIG. Finally, you'll configure DNS to link a user-friendly domain name to the load balancer, making your web application accessible to users.
