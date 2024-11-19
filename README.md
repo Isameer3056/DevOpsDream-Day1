@@ -1,7 +1,7 @@
 ### DevOpsDream-Day1
 ### Welcome to Day 1 Project to land your dream DevOps job
 
-![Day-1](DevOpsDream-Day1/Day-1.png)
+![Day-1](asset/Day-1.png)
 
 ## Project Overview  
 This project focuses on setting up a simple web server, such as Nginx or Apache, on a Elastic Compute cloud instances (EC2). Next, you'll create a Auto scaling Group (ASG) to simplify instances management and enable automatic scaling. To handle traffic and maintain high availability, you'll implement a Layer 7 Load Balancer in front of the ASG. Finally, you'll configure DNS to link a user-friendly domain name to the load balancer, making your web application accessible to users.
