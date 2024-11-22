@@ -1,0 +1,128 @@
+Hosting your portfolio website on AWS with **Nginx**, a **load balancer**, and **DNS configuration** involves the following steps:
+
+---
+
+### **1. Prepare Your Website**
+1. Ensure your HTML, CSS, and JavaScript files are ready.
+2. Zip your website files for easy upload.
+
+---
+
+### **2. Set Up an EC2 Instance**
+1. **Login to AWS Console**:
+   - Go to [AWS EC2 Console](https://aws.amazon.com/ec2/).
+2. **Launch an Instance**:
+   - Choose **Ubuntu** as the AMI.
+   - Select an instance type (e.g., `t2.micro` for free tier).
+   - Configure security group:
+     - Allow inbound traffic on **ports 22 (SSH)**, **80 (HTTP)**, and **443 (HTTPS)**.
+   - Add a key pair for SSH access.
+   - Launch the instance and login into it.
+3. **Install Nginx**:
+   - SSH into your EC2 instance:
+     ```bash
+     ssh -i your-key.pem ec2-user@your-instance-public-ip
+     ```
+   - Update the instance and install Nginx:
+     ```bash
+     sudo apt update && sudo apt install nginx -y 
+     ```
+   - Start and enable Nginx:
+     ```bash
+     sudo systemctl start nginx
+     sudo systemctl enable nginx
+     ```
+
+---
+
+### **3. Deploy Your Website**
+1. Copy your files to the server:
+   ```bash
+   scp -i your-key.pem /path/to/your-website.zip ec2-user@your-instance-public-ip:~/
+   ```
+2. Unzip and move the files to the Nginx directory:
+   # Install unzip if necessary
+   ```bash
+   sudo apt install unzip -y
+   unzip your-website.zip
+   sudo mv * /var/www/html/
+   ```
+
+3. Test your site by accessing the public IP of the instance in a browser.
+
+---
+
+### **4. Configure Nginx for Load Balancing**
+1. Launch **2 or more EC2 instances** and repeat the above steps for each.
+2. Modify the Nginx configuration on one instance to act as a reverse proxy:
+   ```bash
+   sudo nano /etc/nginx/nginx.conf
+   ```
+   Add the following under the `http` block:
+   ```nginx
+   upstream backend {
+       server <Instance1_Private_IP>;
+       server <Instance2_Private_IP>;
+   }
+
+   server {
+       listen 80;
+
+       location / {
+           proxy_pass http://backend;
+       }
+   }
+   ```
+3. Restart Nginx:
+   ```bash
+   sudo systemctl restart nginx
+   ```
+
+---
+
+### **5. Set Up an AWS Elastic Load Balancer**
+1. Go to the **Elastic Load Balancer (ELB)** section in AWS Management Console.
+2. Create an **Application Load Balancer**:
+   - **Listeners**: HTTP (port 80).
+   - **Target Group**: Add the EC2 instances running your website.
+3. Test the Load Balancer's DNS name in a browser.
+
+---
+
+### **6. Set Up DNS with Route 53**
+1. **Create a Hosted Zone**:
+   - Go to **Route 53** > Hosted Zones > Create Hosted Zone.
+   - Enter your domain name and create the hosted zone.
+2. **Add a Record**:
+   - Create an **A Record** pointing your domain name to the Load Balancer's DNS name.
+   - Set the alias to "Yes" and choose the load balancer from the dropdown.
+3. **Update Domain Registrar**:
+   - Update your domain's nameservers to the ones provided by Route 53.
+
+---
+
+### **7. Optional: Set Up HTTPS with Let’s Encrypt**
+1. Install Certbot:
+   ```bash
+   sudo yum install certbot python3-certbot-nginx -y  # Amazon Linux
+   ```
+   OR
+   ```bash
+   sudo apt install certbot python3-certbot-nginx -y  # Ubuntu
+   ```
+2. Request a certificate:
+   ```bash
+   sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
+   ```
+3. Test HTTPS:
+   - Restart Nginx and visit your site using `https://yourdomain.com`.
+
+---
+
+### **8. Monitor and Scale**
+1. Enable **CloudWatch** to monitor EC2 performance.
+2. Use **Auto Scaling Groups** to automatically add/remove instances based on traffic.
+
+---
+
+This setup ensures **high availability, scalability, and security**.🚀
