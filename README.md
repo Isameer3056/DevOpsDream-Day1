@@ -1,6 +1,8 @@
 ### DevOpsDream-Day1
 ### Welcome to Day 1 Project to land your dream DevOps job
 
+**Project 1:  Web Server with Load Balancer and DNS**
+
 ![Day-1](asset/day-1.png)
 
 ## Project Overview  
